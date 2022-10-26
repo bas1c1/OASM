@@ -1,2 +1,2 @@
 # OASM
-OASM - AsSeMbly for creating Operating systems
+OASM - `A`s`S`e`M`bly for creating `O`perating systems
