@@ -13,14 +13,11 @@ public:
     void parse(vector< Function > lexems)
     {
         FILE *file = fopen("boot.bin", "wb+");
-        string b;
-        unsigned char stack[512];
-        int count = 0;
+
         for (int i = 0; i < 512; i++) stack[i] = 0x00;
         for (int i = 0; i < lexems.size(); i++) {
-            cout << "testtttt" << endl;
             if (count >= 511) {
-                cout << RED << "ERROR: Out of 512 bytes" << RESET << endl;
+                cout << "ERROR: Out of 512 bytes" << endl;
                 system("pause");
                 exit(1);
             }
@@ -32,73 +29,25 @@ public:
                 stack[511] = 0xaa;
             }
             else if (NowInstruction.FunctionV == "mov") {
-                if (values[0] == "al") {
-                    stack[count] = 0xb0;
-                    count++;
-                }
-                else if (values[0] == "cl") {
-                    stack[count] = 0xb1;
-                    count++;
-                }
-                else if (values[0] == string("dl")) {
-                    stack[count] = 0xb2;
-                    count++;
-                }
-                else if (values[0] == string("bl")) {
-                    stack[count] = 0xb3;
-                    count++;
-                } 
-                else if (values[0] == string("ah")) {
-                    stack[count] = 0xb4;
-                    count++;
-                }else if (values[0] == string("ch")) {
-                    stack[count] = 0xb5;
-                    count++;
-                }else if (values[0] == string("dh")) {
-                    stack[count] = 0xb6;
-                    count++;
-                }
-                else if (values[0] == string("bh")) {
-                    stack[count] = 0xb7;
-                    count++;
-                }
-                else if (values[0] == string("eax")) {
-                    stack[count] = 0xb8;
-                    count++;
-                }
-                else if (values[0] == string("ecx")) {
-                    stack[count] = 0xb9;
-                    count++;
-                }
-                else if (values[0] == string("edx")) {
-                    stack[count] = 0xba;
-                    count++;
-                } 
-                else if (values[0] == string("ebx")) {
-                    stack[count] = 0xbb;
-                    count++;
-                }
-                else if (values[0] == string("esp")) {
-                    stack[count] = 0xbc;
-                    count++;
-                }
-                else if (values[0] == string("ebp")) {
-                    stack[count] = 0xbd;
-                    count++;
-                }
-                else if (values[0] == string("esi")) {
-                    stack[count] = 0xbe;
-                    count++;
-                }
-                else if (values[0] == string("edi")) {
-                    stack[count] = 0xbf;
-                    count++;
-                }
+                string v = values[0];
+                if (value_parse(v,"al", 0xb0)) continue;
+                else if (value_parse(v,"cl", 0xb1)) continue;
+                else if (value_parse(v,"dl", 0xb2)) continue;
+                else if (value_parse(v,"bl", 0xb3)) continue;
+                else if (value_parse(v,"ah", 0xb4)) continue;
+                else if (value_parse(v,"ch", 0xb5)) continue;
+                else if (value_parse(v,"dh", 0xb6)) continue;
+                else if (value_parse(v,"bh", 0xb7)) continue;
+                else if (value_parse(v,"eax", 0xb8)) continue;
+                else if (value_parse(v,"ecx", 0xb9)) continue;
+                else if (value_parse(v,"edx", 0xba)) continue;
+                else if (value_parse(v,"ebx", 0xbb)) continue;
+                else if (value_parse(v,"esp", 0xbc)) continue;
+                else if (value_parse(v,"ebp", 0xbd)) continue;
+                else if (value_parse(v,"edi", 0xbf)) continue;
+                else if (value_parse(v,"esi", 0xbe)) continue;
                 else {
-                    cout <<
-                        RED << "ERROR: reg is not supported>> " << RESET <<
-                        values[0] << endl;
-                    system("pause");
+                    cout << "This reg is not supported: " << v << '\n';
                     exit(1);
                 }
 
@@ -110,7 +59,6 @@ public:
                 count++;
             }
             else if (NowInstruction.FunctionV == "int") {
-                // why... code must be cd10, but is is ff00...
                 stack[count] = 0xcd;
                 count++;
                 string value1 = values[0];
@@ -123,16 +71,14 @@ public:
                     stack[count] = stouc(values[1]);
                     count++;
                 } 
-                else if (b == string("skipbyte")) {
+                else if (values[0] == "skipbyte") {
                     count++;
                 } 
-                else if (b == string("back")) {
+                else if (values[0] == "back") {
                     count--;
                 }
             }
-            cout << "test" << endl;
         }
-        cout << 99 << endl;
         for (int i = 0; i < 512; i++) {
             unsigned char curr = stack[i];
             fwrite (&curr, 1, 1, file);
@@ -144,4 +90,14 @@ private:
     unsigned char stouc(string hexs) {
         return (unsigned char)stoi( hexs.substr(0, 2), nullptr, 16 );
     }
+    bool value_parse(string value, string if_it_this, unsigned char set_value) {
+        if (value==if_it_this) {
+            stack[count] = set_value;
+            count++;
+            return true;
+        }
+        return false;
+    }
+    unsigned char stack[512];
+    int count = 0;
 };

@@ -40,8 +40,6 @@ class Lexer
         {
             // read all code
             vector<string> lines = split(code, '\n');
-            cout << "lines: " << lines.size() << endl;
-
             for (int l = 0; l<lines.size(); l++)
             {
                 // this line
@@ -57,25 +55,11 @@ class Lexer
                 for (int w = 0; w<words.size(); w++)
                 {
                     string word = words[w];
-                    
-                    // cout << "last word: " << word << endl;
-                    values.push_back(word);
-                    cout << "value: " << word << endl;
-                }
 
-                // for (int t = 0; t<values.size(); t++) {
-                    // cout << " val: " << values[t] << ";";
-                // }
-                // cout << endl;
+                    values.push_back(word);
+                }
                 
                 AddToken(instruction, values);
-            }
-
-            for (int i=0;i<TokensResult.size();i++) {
-                cout << "function: " << TokensResult[i].FunctionV << endl;
-                for (int m=0;m<TokensResult[i].ValuesV.size();m++) {
-                    cout << "value: " << TokensResult[i].ValuesV[m] << endl;
-                }
             }
 
             return TokensResult;

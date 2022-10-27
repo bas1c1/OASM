@@ -14,7 +14,7 @@ string read_file(string path) {
     // if can't open the file
     if ( !file.is_open() )
     {
-        cout << RED << "ERROR: Can't open file \"" << path << "\"!" << RESET<< endl;
+        cout << "ERROR: Can't open file \"" << path << "\"!" << endl;
         system("pause");
         exit(1);
     }
@@ -36,7 +36,7 @@ string read_file(string path) {
 int main(int argc, char* argv[]) {
     if ( argc == 1 )
     {
-        cout << RED << "ERROR: No first argument (path to file)" << RESET<< endl;
+        cout << "ERROR: No first argument (path to file)" << endl;
         system("pause");
         exit(1);
     }
@@ -45,14 +45,11 @@ int main(int argc, char* argv[]) {
     string path = argv[1];
     // get code
     string code = read_file(path);
-    cout << 1 << endl;
 
     Lexer Lex;
     Parser Parse;
-    cout << 2 << endl;
 
     vector< Function > lexems = Lex.lex(code);
-    cout << 3 << endl;
 
     Parse.parse(lexems);
 
