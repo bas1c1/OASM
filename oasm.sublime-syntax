@@ -1,0 +1,20 @@
+%YAML 1.2
+---
+file_extensions:
+  - oasm
+  - asm
+scope: source
+contexts:
+  main:
+    # strings
+    - match: "'."
+      scope: string.quoted.single
+    # instructions
+    - match: '^[^\s ]*\b'
+      scope: keyword.control.import
+    # numbers
+    - match: '\b(0x)?[0-9a-fA-F]+\b'
+      scope: constant.numeric
+
+    - match: '.'
+      scope: variable.parameter
