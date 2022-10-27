@@ -5,8 +5,8 @@ OASM - `A`s`S`e`M`bly for creating `O`perating systems
 
 bas1c:
 
-parser, compiler, optimized version
+parser, compiler, optimized version, base for full version
 
 WiSpace:
 
-lexer, full version
+lexer, full version (better-for-read)
