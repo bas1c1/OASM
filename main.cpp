@@ -146,6 +146,6 @@ int main(int argc, char*argv[]) {
     if (in.is_open()) while (getline(in, line)) code += line + ' ';
     in.close();
     vector<string> lines = lex(code);
-    parse(lines, "boot.bin");
+    parse(lines, (char*)"boot.bin");
     return 0;
 }
