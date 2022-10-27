@@ -1,4 +1,3 @@
-/* LEXER */
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -16,7 +15,6 @@ vector<string> lex(string code) {
     while (getline(code_r, buff, ' ')) Res.push_back(buff);
     return Res;
 }
-/* END LEXER */
 unsigned char stouc(string hexs) { return (unsigned char)stoi(hexs.substr(0, 2), nullptr, 16); }
 
 void parse(vector<string> v, char *fname) {
