@@ -5,7 +5,7 @@ made by <a href="https://github.com/bas1c1">bas1c</a> and <a href="https://githu
 
 bas1c:
 
-parser, compiler, optimized version, base for full version
+parser, compiler, optimized version, base for language
 
 WiSpace:
 
