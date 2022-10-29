@@ -1,6 +1,6 @@
-mov al 02
+mov al 01
 mov ah 0e
 int 10h
-cmpal 02
+cmpal 01
 jze F6
 setAA55
