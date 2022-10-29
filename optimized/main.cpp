@@ -121,6 +121,36 @@ void parse(vector<string> v, char *fname) {
             count++;
             continue;
         }
+        if (b == string("ret")) {
+            stack[count] = 0xc3;
+            count++;
+            continue;
+        }
+        if (b == string("calln")) {
+            stack[count] = 0xe8;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("cmpal")) {
+            stack[count] = 0x3c;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+        }
+        if (b == string("jze")) {
+            stack[count] = 0x74;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+        }
         if (b == string("#macro")) {
             i++;
             b = v[i];
