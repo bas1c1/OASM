@@ -1,0 +1,5 @@
+mov ah 0e
+mov al 'a
+int 10h
+jmps F8
+setAA55
