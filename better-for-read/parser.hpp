@@ -66,6 +66,13 @@ public:
                 stack[count] = stouc(value1);
                 count++;
             }
+            else if (NowInstruction.FunctionV == string("jmps")) {
+                stack[count] = 0xeb;
+                count++;
+                stack[count] = stouc(values[0]);
+                count++;
+                continue;
+            }
             else if (NowInstruction.FunctionV == "#macro") {
                 if (values[0] == "setbyte") {
                     stack[count] = stouc(values[1]);
