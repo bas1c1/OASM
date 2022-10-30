@@ -4,6 +4,8 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <fcntl.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -263,6 +265,31 @@ void parse(vector<string> v, char *fname) {
             if (b[0]!='\'') stack[count] = stouc(b);
             else stack[count] = (unsigned char)(b[1]);
             count++;
+            continue;
+        }
+        if (b == string("incbin")) {
+            i++;
+            b = v[i];
+            string binname = b;
+            i++;
+            b = v[i];
+            int skip = stoi(b);
+            i++;
+            b = v[i];
+            int siz = stoi(b);
+            int fil = open(binname.c_str(), O_RDONLY);
+            unsigned char temp;
+            for (int i = 0; i < skip; i++) {read(fil, &temp, sizeof(temp));}
+            for (int i = skip+1; i <= siz; i++) { unsigned char c; read(fil, &c, sizeof(c)); stack[count]=c; count++; }
+            close(fil);
+            continue;
+        }
+        if (b == string("resb")) {
+            i++;
+            b = v[i];
+            for (int i = 0; i <= stoi(b); i++) {
+                count++;
+            }
             continue;
         }
         if (b == string("#opst")) {
