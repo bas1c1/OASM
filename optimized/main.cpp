@@ -5,7 +5,10 @@
 #include <sstream>
 #include <algorithm>
 #include <fcntl.h>
+#include <regex>
 #include <unistd.h>
+
+int stacksize = 512;
 
 using namespace std;
 
@@ -23,15 +26,11 @@ unsigned char stouc(string hexs) { return (unsigned char)stoi(hexs.substr(0, 2),
 void parse(vector<string> v, char *fname) {
     FILE *file = fopen(fname, "wb+");
     string b;
-    unsigned char stack[512];
+    unsigned char stack[stacksize];
     int count = 0;
-    for (int i = 0; i < 512; i++) stack[i] = 0x00;
+    for (int i = 0; i < stacksize; i++) stack[i] = 0x00;
     for (int i = 0; i < v.size(); i++) {
         b = v[i];
-        if (count >= 511) {
-            cout << "Out of 512 bytes\n";
-            exit(1);
-        }
         if (b == string("setAA55")) {
             stack[510] = 0x55;
             stack[511] = 0xaa;
@@ -212,6 +211,11 @@ void parse(vector<string> v, char *fname) {
             count++;
             continue;
         }
+        if (b == string("retf")) {
+            stack[count] = 0xcb;
+            count++;
+            continue;
+        }
         if (b == string("calln")) {
             stack[count] = 0xe8;
             count++;
@@ -232,6 +236,15 @@ void parse(vector<string> v, char *fname) {
         }
         if (b == string("jze")) {
             stack[count] = 0x74;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("jс")) {
+            stack[count] = 0x72;
             count++;
             i++;
             b = v[i];
@@ -301,7 +314,11 @@ void parse(vector<string> v, char *fname) {
             i++;
             b = v[i];
             if (b == string("next")) {
-                count++;
+                i++;
+                b = v[i];
+                for (int i = 0; i <= stoi(b); i++) {
+                    count++;
+                }
                 continue;
             }
             if (b == string("goto")) {
@@ -321,7 +338,7 @@ void parse(vector<string> v, char *fname) {
             continue;
         }
     }
-    for (int i = 0; i < 512; i++) { unsigned char curr = stack[i]; fwrite (&curr, 1, 1, file); }
+    for (int i = 0; i < stacksize; i++) { unsigned char curr = stack[i]; fwrite (&curr, 1, 1, file); }
     fclose(file);
     cout << count+2 << " bytes used\n";
 }
@@ -329,10 +346,12 @@ void parse(vector<string> v, char *fname) {
 int main(int argc, char*argv[]) {
     string line;
     string code;
- 
+    if (argc>2) stacksize = stoi(argv[2]);
     ifstream in(argv[1]);
     if (in.is_open()) while (getline(in, line)) code += line + ' ';
     in.close();
+    regex r("\/\*([\s\S\n\t]+?)\*\/");
+    code = regex_replace(code, r, "");
     vector<string> lines = lex(code);
     parse(lines, (char*)"boot.bin");
     return 0;
