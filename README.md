@@ -39,8 +39,10 @@ db
 dw
 resb
 incbin
+hlt
 #opst:
   next
+  goto
   back
 setAA55
 ```
