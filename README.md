@@ -33,9 +33,10 @@ cmpal
 jze
 mempush
 mempop
-#macro:
-  setbyte
-  skipbyte
+db
+dw
+#opst:
+  next
   back
 setAA55
 ```
