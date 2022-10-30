@@ -20,7 +20,6 @@ lexer, full version (better-for-read)
 <h1 align="center"> Commands </h1>
 
 ```
-setAA55
 mov
 push
 pop
@@ -38,4 +37,5 @@ mempop
   setbyte
   skipbyte
   back
+setAA55
 ```
