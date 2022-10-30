@@ -1,0 +1,8 @@
+push ax
+pop ax
+mov al 02
+mov ah 0e
+int 10h
+cmpal 02
+jze F6
+setAA55
