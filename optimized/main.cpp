@@ -221,6 +221,7 @@ void parse(vector<string> v, char *fname) {
             b = v[i];
             stack[count] = stouc(b);
             count++;
+            continue;
         }
         if (b == string("jze")) {
             stack[count] = 0x74;
@@ -229,6 +230,7 @@ void parse(vector<string> v, char *fname) {
             b = v[i];
             stack[count] = stouc(b);
             count++;
+            continue;
         }
         if (b == string("mempush")) {
             stack[count] = 0xFF;
@@ -237,6 +239,7 @@ void parse(vector<string> v, char *fname) {
             b = v[i];
             stack[count] = stouc(b);
             count++;
+            continue;
         }
         if (b == string("mempop")) {
             stack[count] = 0x8F;
@@ -245,18 +248,27 @@ void parse(vector<string> v, char *fname) {
             b = v[i];
             stack[count] = stouc(b);
             count++;
+            continue;
         }
-        if (b == string("#macro")) {
+        if (b == string("db")) {
             i++;
             b = v[i];
-            if (b == string("setbyte")) {
-                i++;
-                b = v[i];
-                stack[count] = stouc(b);
-                count++;
-                continue;
-            } 
-            if (b == string("skipbyte")) {
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("dw")) {
+            i++;
+            b = v[i];
+            if (b[0]!='\'') stack[count] = stouc(b);
+            else stack[count] = (unsigned char)(b[1]);
+            count++;
+            continue;
+        }
+        if (b == string("#opst")) {
+            i++;
+            b = v[i];
+            if (b == string("next")) {
                 count++;
                 continue;
             } 
