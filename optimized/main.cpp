@@ -1,4 +1,3 @@
-/* LEXER */
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -16,7 +15,7 @@ vector<string> lex(string code) {
     while (getline(code_r, buff, ' ')) Res.push_back(buff);
     return Res;
 }
-/* END LEXER */
+
 unsigned char stouc(string hexs) { return (unsigned char)stoi(hexs.substr(0, 2), nullptr, 16); }
 
 void parse(vector<string> v, char *fname) {
@@ -102,6 +101,86 @@ void parse(vector<string> v, char *fname) {
             count++;
             continue;
         }
+        if (b == string("push")) {
+            i++;
+            b = v[i];
+            if (b == string("ax")) {
+                stack[count] = 0x50;
+                count++;
+            } else if (b == string("cx")) {
+                stack[count] = 0x51;
+                count++;
+            } else if (b == string("dx")) {
+                stack[count] = 0x52;
+                count++;
+            } else if (b == string("bx")) {
+                stack[count] = 0x53;
+                count++;
+            } 
+            else if (b == string("sp")) {
+                stack[count] = 0x54;
+                count++;
+            } else if (b == string("bp")) {
+                stack[count] = 0x55;
+                count++;
+            } else if (b == string("si")) {
+                stack[count] = 0x56;
+                count++;
+            } else if (b == string("di")) {
+                stack[count] = 0x57;
+                count++;
+            }
+            else {
+                cout << "This reg is not supported: " << b << '\n';
+                exit(1);
+            }
+            continue;
+        }
+        if (b == string("pop")) {
+            i++;
+            b = v[i];
+            if (b == string("ax")) {
+                stack[count] = 0x58;
+                count++;
+            } else if (b == string("cx")) {
+                stack[count] = 0x59;
+                count++;
+            } else if (b == string("dx")) {
+                stack[count] = 0x5a;
+                count++;
+            } else if (b == string("bx")) {
+                stack[count] = 0x5b;
+                count++;
+            } 
+            else if (b == string("sp")) {
+                stack[count] = 0x5c;
+                count++;
+            } else if (b == string("bp")) {
+                stack[count] = 0x5d;
+                count++;
+            } else if (b == string("si")) {
+                stack[count] = 0x5e;
+                count++;
+            } else if (b == string("di")) {
+                stack[count] = 0x5f;
+                count++;
+            }
+            else {
+                cout << "This reg is not supported: " << b << '\n';
+                exit(1);
+            }
+            continue;
+        }
+        if (b == string("pusha")) {
+            stack[count] = 0x60;
+            count++;
+            continue;
+        }
+        if (b == string("popa")) {
+            stack[count] = 0x61;
+            count++;
+            continue;
+        }
         if (b == string("int")) {
             stack[count] = 0xcd;
             count++;
@@ -145,6 +224,22 @@ void parse(vector<string> v, char *fname) {
         }
         if (b == string("jze")) {
             stack[count] = 0x74;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+        }
+        if (b == string("mempush")) {
+            stack[count] = 0xFF;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+        }
+        if (b == string("mempop")) {
+            stack[count] = 0x8F;
             count++;
             i++;
             b = v[i];
