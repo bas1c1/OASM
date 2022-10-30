@@ -16,3 +16,26 @@ parser, compiler, optimized version, base for language
 WiSpace:
 
 lexer, full version (better-for-read)
+
+<h1 align="center"> Commands </h1>
+
+```
+setAA55
+mov
+push
+pop
+pusha
+popa
+int
+jmps
+ret
+calln
+cmpal
+jze
+mempush
+mempop
+#macro:
+  setbyte
+  skipbyte
+  back
+```
