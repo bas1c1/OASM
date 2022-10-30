@@ -40,6 +40,7 @@ dw
 resb
 incbin
 hlt
+jc
 #opst:
   next
   goto
