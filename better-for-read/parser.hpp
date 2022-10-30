@@ -1,10 +1,11 @@
 #include <iostream>
 #include <string>
 #include <limits>
-#include <cmath>
-#include <cstdlib>
+#include <fcntl.h>
+#include <unistd.h>
 #include "includes.hpp"
 #include "tokens.hpp"
+#include "registers.hpp"
 #pragma once
 
 class Parser
@@ -23,67 +24,75 @@ public:
             }
             Function NowInstruction = lexems[i];
             vector< string > values = NowInstruction.ValuesV;
+            string f = NowInstruction.FunctionV;
 
-            if (NowInstruction.FunctionV == "setAA55") {
+            easy_inst(f, "hlt", 0xf4);
+            easy_inst(f, "pusha", 0x60);
+            easy_inst(f, "popa", 0x61);
+            easy_inst(f, "ret", 0xc3);
+            easy_inst2(true, f, values[0], "mempush", 0xFF);
+            easy_inst2(true, f, values[0], "mempop", 0x8F);
+            easy_inst2(false, f, values[0], "db", 0x00);
+            easy_inst2(true, f, values[0], "cmpal", 0x3c);
+            easy_inst2(true, f, values[0], "calln", 0xe8);
+            easy_inst2(true, f, values[0], "jze", 0x74);
+            easy_inst2(true, f, values[0], "jmps", 0xeb);
+            easy_inst2(true, f, values[0], "int", 0xcd);
+            easy_inst2(true, f, values[0], "jze", 0x74);
+
+            if (f == "setAA55") {
                 stack[510] = 0x55;
                 stack[511] = 0xaa;
             }
-            else if (NowInstruction.FunctionV == "mov") {
+            else if (f == "dw") {
+                if (values[0][0]!='\'')
+                    stack[count] = stouc(values[0]);
+                else
+                    stack[count] = (unsigned char)(values[0][1]);
+                count++;
+            }
+            else if (f == "resb") {
+                for (int i = 0; i <= stoi(values[0]); i++) {
+                    count++;
+                }
+            }
+            else if (f == "#opst") {
                 string v = values[0];
-                if (value_parse(v,"al", 0xb0)) continue;
-                else if (value_parse(v,"cl", 0xb1)) continue;
-                else if (value_parse(v,"dl", 0xb2)) continue;
-                else if (value_parse(v,"bl", 0xb3)) continue;
-                else if (value_parse(v,"ah", 0xb4)) continue;
-                else if (value_parse(v,"ch", 0xb5)) continue;
-                else if (value_parse(v,"dh", 0xb6)) continue;
-                else if (value_parse(v,"bh", 0xb7)) continue;
-                else if (value_parse(v,"eax", 0xb8)) continue;
-                else if (value_parse(v,"ecx", 0xb9)) continue;
-                else if (value_parse(v,"edx", 0xba)) continue;
-                else if (value_parse(v,"ebx", 0xbb)) continue;
-                else if (value_parse(v,"esp", 0xbc)) continue;
-                else if (value_parse(v,"ebp", 0xbd)) continue;
-                else if (value_parse(v,"edi", 0xbf)) continue;
-                else if (value_parse(v,"esi", 0xbe)) continue;
-                else {
-                    cout << "This reg is not supported: " << v << '\n';
-                    exit(1);
+                if (v == "next") count++;
+                else if (v == "goto") count = stoi(values[1]);
+                else if (v == "back") for (int i = 0; i <= stoi(values[1]); i++) count--;
+            }
+            else if (f == "incbin") {
+                string binname = values[0];
+                int skip = stoi(values[1]);
+                int siz = stoi(values[2]);
+                int fil = open(binname.c_str(), O_RDONLY);
+                unsigned char temp;
+
+                for (int i = 0; i < skip; i++) {
+                    read(fil, &temp, sizeof(temp));
                 }
 
-                if (values[1][0]!='\'')
-                    stack[count] = stouc(values[1]);
-                else
-                    stack[count] = (unsigned char)(values[1][1]);
-                
-                count++;
-            }
-            else if (NowInstruction.FunctionV == "int") {
-                stack[count] = 0xcd;
-                count++;
-                string value1 = values[0];
-                value1.pop_back();
-                stack[count] = stouc(value1);
-                count++;
-            }
-            else if (NowInstruction.FunctionV == string("jmps")) {
-                stack[count] = 0xeb;
-                count++;
-                stack[count] = stouc(values[0]);
-                count++;
-                continue;
-            }
-            else if (NowInstruction.FunctionV == "#macro") {
-                if (values[0] == "setbyte") {
-                    stack[count] = stouc(values[1]);
+                for (int i = skip+1; i <= siz; i++) {
+                    unsigned char c;
+                    read(fil, &c, sizeof(c));
+                    stack[count]=c;
                     count++;
-                } 
-                else if (values[0] == "skipbyte") {
-                    count++;
-                } 
-                else if (values[0] == "back") {
-                    count--;
                 }
+
+                close(fil);
+            }
+            else if (f == "mov") {
+                map< string, unsigned char > movreg = mov::reg();
+                spec_inst(values[0], movreg);
+            }
+            else if (f == "push") {
+                map< string, unsigned char > pushreg = push::reg();
+                spec_inst(values[0], pushreg);
+            }
+            else if (f == "pop") {
+                map< string, unsigned char > popreg = pop::reg();
+                spec_inst(values[0], popreg);
             }
         }
         for (int i = 0; i < 512; i++) {
@@ -96,6 +105,31 @@ public:
 private:
     unsigned char stouc(string hexs) {
         return (unsigned char)stoi( hexs.substr(0, 2), nullptr, 16 );
+    }
+    void easy_inst(string f, string name, unsigned char set_v) {
+        if (f==name) {
+            stack[count] = set_v;
+            count++;
+        }
+    }
+    void easy_inst2(bool first, string f, string v, string name, unsigned char set_v) {
+        if (f==name) {
+            if (first) {
+                stack[count] = set_v;
+                count++;
+            }
+            stack[count] = stouc(v);
+            count++;
+        }
+    }
+    void spec_inst(string val, map< string, unsigned char > regs) {
+        if (regs.find(val) == regs.end()) {
+            stack[count] = regs[val];
+            count++;
+        } else {
+            cout << "This reg is not supported: " << val << endl;
+            exit(1);
+        }
     }
     bool value_parse(string value, string if_it_this, unsigned char set_value) {
         if (value==if_it_this) {

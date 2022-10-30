@@ -2,6 +2,9 @@
 #include <fstream>
 #include <cstdlib>
 #include <sstream>
+#include <string>
+#include <regex>
+#include <iterator>
 #include "includes.hpp"
 #include "tokens.hpp"
 #include "lexer.hpp"
@@ -44,7 +47,7 @@ int main(int argc, char* argv[]) {
     // path to file
     string path = argv[1];
     // get code
-    string code = read_file(path);
+    std::string code = read_file(path);
 
     Lexer Lex;
     Parser Parse;
