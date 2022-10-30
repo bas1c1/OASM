@@ -35,6 +35,8 @@ mempush
 mempop
 db
 dw
+resb
+incbin
 #opst:
   next
   back
