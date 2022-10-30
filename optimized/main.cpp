@@ -173,6 +173,11 @@ void parse(vector<string> v, char *fname) {
             }
             continue;
         }
+        if (b == string("hlt")) {
+            stack[count] = 0xf4;
+            count++;
+            continue;
+        }
         if (b == string("pusha")) {
             stack[count] = 0x60;
             count++;
@@ -298,9 +303,19 @@ void parse(vector<string> v, char *fname) {
             if (b == string("next")) {
                 count++;
                 continue;
+            }
+            if (b == string("goto")) {
+                i++;
+                b = v[i];
+                count = stoi(b);
+                continue;
             } 
             if (b == string("back")) {
-                count--;
+                i++;
+                b = v[i];
+                for (int i = 0; i <= stoi(b); i++) {
+                    count--;
+                }
                 continue;
             }
             continue;
