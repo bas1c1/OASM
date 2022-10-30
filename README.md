@@ -2,7 +2,7 @@
 <image src="OASM.png">
 <h1> OASM </h1>
 
-OASM - `A`s`S`e`M`bly for creating `O`perating systems
+`A`s`S`e`M`bly for creating `O`perating systems
 
 </div>
 
