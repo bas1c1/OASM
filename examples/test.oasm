@@ -1,8 +1,8 @@
 mov ah 0e
 mov al 'a
-#opst setbyte FF
-#opst back
-#opst setbyte 00
-#opst back
+db FF
+#opst back 1
+db 00
+#opst back 1
 int 10h
 setAA55
