@@ -19,7 +19,7 @@ lexer, full version (better-for-read)
 
 <h1 align="center"> Commands </h1>
 
-Version 0.51
+Version 0.54
 
 ```
 mov
