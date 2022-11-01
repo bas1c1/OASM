@@ -102,6 +102,76 @@ void parse(vector<string> v, char *fname) {
             count++;
             continue;
         }
+        if (b == string("dec")) {
+            i++;
+            b = v[i];
+            if (b == string("ax")) {
+                stack[count] = 0x48;
+                count++;
+            } else if (b == string("cx")) {
+                stack[count] = 0x49;
+                count++;
+            } else if (b == string("dx")) {
+                stack[count] = 0x4a;
+                count++;
+            } else if (b == string("bx")) {
+                stack[count] = 0x4b;
+                count++;
+            } 
+            else if (b == string("sp")) {
+                stack[count] = 0x4c;
+                count++;
+            } else if (b == string("bp")) {
+                stack[count] = 0x4d;
+                count++;
+            } else if (b == string("si")) {
+                stack[count] = 0x4e;
+                count++;
+            } else if (b == string("di")) {
+                stack[count] = 0x4f;
+                count++;
+            }
+            else {
+                cout << "This reg is not supported: " << b << '\n';
+                exit(1);
+            }
+            continue;
+        }
+        if (b == string("inc")) {
+            i++;
+            b = v[i];
+            if (b == string("ax")) {
+                stack[count] = 0x40;
+                count++;
+            } else if (b == string("cx")) {
+                stack[count] = 0x41;
+                count++;
+            } else if (b == string("dx")) {
+                stack[count] = 0x42;
+                count++;
+            } else if (b == string("bx")) {
+                stack[count] = 0x43;
+                count++;
+            } 
+            else if (b == string("sp")) {
+                stack[count] = 0x44;
+                count++;
+            } else if (b == string("bp")) {
+                stack[count] = 0x45;
+                count++;
+            } else if (b == string("si")) {
+                stack[count] = 0x46;
+                count++;
+            } else if (b == string("di")) {
+                stack[count] = 0x47;
+                count++;
+            }
+            else {
+                cout << "This reg is not supported: " << b << '\n';
+                exit(1);
+            }
+            continue;
+        }
         if (b == string("push")) {
             i++;
             b = v[i];
@@ -227,6 +297,78 @@ void parse(vector<string> v, char *fname) {
         }
         if (b == string("cmpal")) {
             stack[count] = 0x3c;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("aladd")) {
+            stack[count] = 0x04;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("axadd")) {
+            stack[count] = 0x05;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("alsub")) {
+            stack[count] = 0x2c;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("axsub")) {
+            stack[count] = 0x2d;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("alor")) {
+            stack[count] = 0x0c;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("axor")) {
+            stack[count] = 0x0d;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("alxor")) {
+            stack[count] = 0x34;
+            count++;
+            i++;
+            b = v[i];
+            stack[count] = stouc(b);
+            count++;
+            continue;
+        }
+        if (b == string("axxor")) {
+            stack[count] = 0x35;
             count++;
             i++;
             b = v[i];
