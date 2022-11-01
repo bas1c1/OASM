@@ -41,6 +41,16 @@ resb
 incbin
 hlt
 jc
+aladd
+axadd
+alsub
+axsub
+alor
+axor
+alxor
+axxor
+inc
+dec
 #opst:
   next
   goto
