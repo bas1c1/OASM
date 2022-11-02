@@ -29,6 +29,7 @@ public:
             easy_inst(f, "hlt", 0xf4);
             easy_inst(f, "pusha", 0x60);
             easy_inst(f, "popa", 0x61);
+            easy_inst(f, "retf", 0xcb);
             easy_inst(f, "ret", 0xc3);
             easy_inst2(true, f, values[0], "mempush", 0xFF);
             easy_inst2(true, f, values[0], "mempop", 0x8F);
@@ -38,7 +39,15 @@ public:
             easy_inst2(true, f, values[0], "jze", 0x74);
             easy_inst2(true, f, values[0], "jmps", 0xeb);
             easy_inst2(true, f, values[0], "int", 0xcd);
-            easy_inst2(true, f, values[0], "jze", 0x74);
+            easy_inst2(true, f, values[0], "aladd", 0x04);
+            easy_inst2(true, f, values[0], "axadd", 0x05);
+            easy_inst2(true, f, values[0], "alsub", 0x2c);
+            easy_inst2(true, f, values[0], "axsub", 0x2d);
+            easy_inst2(true, f, values[0], "alor", 0x0c);
+            easy_inst2(true, f, values[0], "axor", 0x0d);
+            easy_inst2(true, f, values[0], "axxor", 0x35);
+            easy_inst2(true, f, values[0], "alxor", 0x34);
+            easy_inst2(true, f, values[0], "jс", 0x72);
 
             if (f == "setAA55") {
                 stack[510] = 0x55;
@@ -93,6 +102,14 @@ public:
             else if (f == "pop") {
                 map< string, unsigned char > popreg = pop::reg();
                 spec_inst(values[0], popreg);
+            }
+            else if (f == "dec") {
+                map< string, unsigned char > popreg = dec::reg();
+                spec_inst(values[0], popreg);
+            }
+            else if (f == "inc") {
+                map< string, unsigned char > pushreg = inc::reg();
+                spec_inst(values[0], pushreg);
             }
         }
         for (int i = 0; i < 512; i++) {

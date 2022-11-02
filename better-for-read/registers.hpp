@@ -55,3 +55,33 @@ namespace pop {
         return regs;
     }
 }
+
+namespace dec {
+    map< string, unsigned char > reg() {
+        map< string, unsigned char > regs;
+        regs["ax"] = 0x48;
+        regs["cx"] = 0x49;
+        regs["dx"] = 0x4a;
+        regs["bx"] = 0x4b;
+        regs["sp"] = 0x4c;
+        regs["dp"] = 0x4d;
+        regs["si"] = 0x4e;
+        regs["di"] = 0x4f;
+        return regs;
+    }
+}
+
+namespace inc {
+    map< string, unsigned char > reg() {
+        map< string, unsigned char > regs;
+        regs["ax"] = 0x40;
+        regs["cx"] = 0x41;
+        regs["dx"] = 0x42;
+        regs["bx"] = 0x43;
+        regs["sp"] = 0x44;
+        regs["bp"] = 0x45;
+        regs["si"] = 0x46;
+        regs["di"] = 0x47;
+        return regs;
+    }
+}
