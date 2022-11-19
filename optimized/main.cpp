@@ -7,9 +7,9 @@
 #include <fcntl.h>
 #include <regex>
 #include <unistd.h>
+#include <map>
 
 int stacksize = 512;
-
 using namespace std;
 
 vector<string> lex(string code) {
@@ -21,6 +21,8 @@ vector<string> lex(string code) {
     return Res;
 }
 
+map<string, int> mapfm;
+
 unsigned char stouc(string hexs) { return (unsigned char)stoi(hexs.substr(0, 2), nullptr, 16); }
 
 void parse(vector<string> v, char *fname) {
@@ -31,6 +33,11 @@ void parse(vector<string> v, char *fname) {
     for (int i = 0; i < stacksize; i++) stack[i] = 0x00;
     for (int i = 0; i < v.size(); i++) {
         b = v[i];
+        if (b == string("proc")) {
+            i++;
+            b = v[i];
+            mapfm[b] = count;
+        }
         if (b == string("format_win_console")) {
             string binname = string("win.exe");
             int siz = 513;
@@ -211,8 +218,10 @@ void parse(vector<string> v, char *fname) {
                 count++;
             }
             else {
-                cout << "This reg is not supported: " << b << '\n';
-                exit(1);
+                i++;
+                b = v[i];
+                stack[count] = stouc(b);
+                count++;
             }
             continue;
         }
@@ -283,6 +292,25 @@ void parse(vector<string> v, char *fname) {
             b = v[i];
             stack[count] = stouc(b);
             count++;
+            continue;
+        }
+        if (b == string("jmpl")) {
+            unsigned char final = 0xfe;
+            stack[count] = 0xeb;
+            i++;
+            b = v[i];
+            int temp = count;
+            //int offset = count-mapfm[b];
+            //cout << offset;
+            count++;
+            //for (int i = 0; i < offset-1; i++) {
+            //    final -= 0x02;
+            //}
+            while (temp != mapfm[b]) {
+                temp -= 2;
+                final-=0x02;
+            }
+            stack[count] = final;
             continue;
         }
         if (b == string("ret")) {
