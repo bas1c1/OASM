@@ -22,6 +22,7 @@ lexer, full version (better-for-read)
 Version 0.54
 
 ```
+format_win_console
 mov
 push
 pop
