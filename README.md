@@ -19,7 +19,7 @@ lexer, full version (better-for-read)
 
 <h1 align="center"> Commands </h1>
 
-Version 0.54
+Version 0.7
 
 ```
 format_win_console
