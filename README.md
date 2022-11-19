@@ -30,6 +30,7 @@ pusha
 popa
 int
 jmps
+jmpl
 ret
 calln
 cmpal
@@ -52,6 +53,7 @@ alxor
 axxor
 inc
 dec
+proc
 #opst:
   next
   goto
