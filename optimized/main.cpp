@@ -300,12 +300,7 @@ void parse(vector<string> v, char *fname) {
             i++;
             b = v[i];
             int temp = count;
-            //int offset = count-mapfm[b];
-            //cout << offset;
             count++;
-            //for (int i = 0; i < offset-1; i++) {
-            //    final -= 0x02;
-            //}
             while (temp != mapfm[b]) {
                 temp -= 2;
                 final-=0x02;
