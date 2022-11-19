@@ -31,9 +31,18 @@ void parse(vector<string> v, char *fname) {
     for (int i = 0; i < stacksize; i++) stack[i] = 0x00;
     for (int i = 0; i < v.size(); i++) {
         b = v[i];
+        if (b == string("format_win_console")) {
+            string binname = string("win.exe");
+            int siz = 513;
+            int fil = open(binname.c_str(), O_RDONLY);
+            unsigned char temp;
+            for (int i = 0; i <= siz; i++) { if (i == 118) { stack[count]=0x0d; count++; continue;}unsigned char c; read(fil, &c, sizeof(c)); stack[count]=c; count++; }
+            close(fil);
+        }
         if (b == string("setAA55")) {
             stack[510] = 0x55;
             stack[511] = 0xaa;
+            count += 2;
             continue;
         }
         if (b == string("mov")) {
@@ -482,7 +491,7 @@ void parse(vector<string> v, char *fname) {
     }
     for (int i = 0; i < stacksize; i++) { unsigned char curr = stack[i]; fwrite (&curr, 1, 1, file); }
     fclose(file);
-    cout << count+2 << " bytes used\n";
+    cout << count << " bytes used\n";
 }
 
 int main(int argc, char*argv[]) {
@@ -495,6 +504,6 @@ int main(int argc, char*argv[]) {
     regex r("\/\*([\s\S\n\t]+?)\*\/");
     code = regex_replace(code, r, "");
     vector<string> lines = lex(code);
-    parse(lines, (char*)"boot.bin");
+    parse(lines, (char*)argv[3]);
     return 0;
 }
