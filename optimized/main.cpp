@@ -21,7 +21,13 @@ vector<string> lex(string code) {
     return Res;
 }
 
+typedef struct pair_si {
+    string val;
+    int offset;
+}pair_si;
+
 map<string, int> mapfm;
+vector<pair_si> jmplv;
 
 unsigned char stouc(string hexs) { return (unsigned char)stoi(hexs.substr(0, 2), nullptr, 16); }
 
@@ -301,11 +307,20 @@ void parse(vector<string> v, char *fname) {
             b = v[i];
             int temp = count;
             count++;
-            while (temp != mapfm[b]) {
-                temp -= 2;
-                final-=0x02;
+            if (mapfm[b] != NULL) {
+                while (temp != mapfm[b]) {
+                    temp -= 2;
+                    final-=0x02;
+                }
+                stack[count] = final;
+            } else {
+                pair_si par;
+                par.val = b;
+                par.offset = temp;
+                jmplv.push_back(par);
+                stack[count] = 0x00;
+                count++;
             }
-            stack[count] = final;
             continue;
         }
         if (b == string("ret")) {
@@ -511,6 +526,15 @@ void parse(vector<string> v, char *fname) {
             }
             continue;
         }
+    }
+    for (pair_si par : jmplv) {
+        unsigned char final = 0x00;
+        int tmpoff = par.offset+1;
+        while (par.offset != mapfm[par.val]) {
+            par.offset += 2;
+            final+=0x02;
+        }
+        stack[tmpoff] = final-0x02;
     }
     for (int i = 0; i < stacksize; i++) { unsigned char curr = stack[i]; fwrite (&curr, 1, 1, file); }
     fclose(file);
